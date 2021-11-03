@@ -29,6 +29,7 @@ router
   .post(async (req, res, next) => {
     try {
       const data = await Product.create(req.body);
+      /*  const data = await Product.create({...req.body,productId:req.params.id}); */
       res.send(data);
     } catch (error) {
       console.log(error);
@@ -41,15 +42,10 @@ router.post(
   multer({ storage: cloudinaryStorage }).single("picture"),
   async (req, res, next) => {
     try {
-      /*   const cover = req.file.path; */
-      const { name, category, image, price } = req.body;
-      const data = await Product.create(
-        req.body,
-        { image: req.file.path, isAdmin: true },
-        {
-          fields: ["name", "category", "image", "price"],
-        }
-      );
+      const cover = req.file.path;
+      console.log(cover);
+      /*  const { name, category, image, price } = req.body; */
+      const data = await Product.create({ ...req.body, image: cover });
       console.log(data);
       res.send(data);
     } catch (error) {
