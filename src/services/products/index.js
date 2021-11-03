@@ -15,11 +15,19 @@ const cloudinaryStorage = new CloudinaryStorage({
   },
 });
 
+//http://localhost:5001/products/?price=500 how to consume
 router
   .route("/")
   .get(async (req, res, next) => {
     try {
-      const products = await Product.findAll({ include: Review });
+      const products = await Product.findAll({
+        where: req.query.price
+          ? {
+              price: req.query.price,
+            }
+          : {},
+        include: Review,
+      });
       res.send(products);
     } catch (error) {
       console.log(error);
