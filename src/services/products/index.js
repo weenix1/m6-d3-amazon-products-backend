@@ -1,7 +1,19 @@
 import express from "express";
 import models from "../../db/models/index.js";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { v2 as cloudinary } from "cloudinary";
+import multer from "multer";
+import path from "path";
+
 const { Product, Review } = models;
 const router = express.Router();
+
+const cloudinaryStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "Amazon-Products-backend",
+  },
+});
 
 router
   .route("/")
@@ -23,6 +35,29 @@ router
       next(error);
     }
   });
+
+router.post(
+  "/uploadCloudinary",
+  multer({ storage: cloudinaryStorage }).single("picture"),
+  async (req, res, next) => {
+    try {
+      /*   const cover = req.file.path; */
+      const { name, category, image, price } = req.body;
+      const data = await Product.create(
+        req.body,
+        { image: req.file.path, isAdmin: true },
+        {
+          fields: ["name", "category", "image", "price"],
+        }
+      );
+      console.log(data);
+      res.send(data);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+);
 
 router
   .route("/:id")
