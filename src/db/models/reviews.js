@@ -5,15 +5,11 @@ const { DataTypes } = s;
 const Review = sequelize.define("reviews", {
   id: {
     primaryKey: true,
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
   },
   text: {
     type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  username: {
-    type: DataTypes.STRING,
     allowNull: false,
   },
 

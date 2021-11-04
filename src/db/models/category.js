@@ -2,8 +2,8 @@ import sequelize from "../index.js";
 import s from "sequelize";
 const { DataTypes } = s;
 
-const Product = sequelize.define(
-  "products",
+const Category = sequelize.define(
+  "category",
   {
     id: {
       primaryKey: true,
@@ -14,21 +14,14 @@ const Product = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-
-    image: {
-      type: DataTypes.TEXT,
+    isMobile: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
-    price: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-    },
+  },
+  {
+    timestamps: false,
   }
-  //   {
-  //     timestamps: false,
-  //   }
 );
-
-console.log("executes products.js"); //4.
-
-export default Product;
+console.log("executes category.js");
+export default Category;

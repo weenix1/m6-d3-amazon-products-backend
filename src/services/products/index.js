@@ -5,7 +5,7 @@ import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 import path from "path";
 
-const { Product, Review } = models;
+const { Product, Review, Category, ProductCategory, User } = models;
 const router = express.Router();
 
 const cloudinaryStorage = new CloudinaryStorage({
@@ -26,7 +26,7 @@ router
               price: req.query.price,
             }
           : {},
-        include: Review,
+        include: [{ model: Category, through: { attributes: [] } }, Review],
       });
       res.send(products);
     } catch (error) {
@@ -54,6 +54,10 @@ router.post(
       console.log(cover);
       /*  const { name, category, image, price } = req.body; */
       const data = await Product.create({ ...req.body, image: cover });
+      await ProductCategory.create({
+        productId: data.id,
+        categoryId: req.body.categoryId,
+      });
       console.log(data);
       res.send(data);
     } catch (error) {

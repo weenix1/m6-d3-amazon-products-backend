@@ -1,6 +1,6 @@
 import express from "express";
 import models from "../../db/models/index.js";
-const { Review, Product } = models;
+const { Review, Product, User } = models;
 
 const router = express.Router();
 
@@ -8,7 +8,17 @@ router
   .route("/")
   .get(async (req, res, next) => {
     try {
-      const reviews = await Review.findAll({ include: Product });
+      const reviews = await Review.findAll({
+        include: [
+          User,
+          {
+            model: Product,
+          },
+        ],
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      });
       res.send(reviews);
     } catch (error) {
       console.log(error);
@@ -24,6 +34,44 @@ router
       next(error);
     }
   });
+
+router.route("/bulkCreate").post(async (req, res, next) => {
+  try {
+    const data = await Review.bulkCreate(req.body);
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+/* router.route("/:productId/review").post(async (req, res, next) => {
+  try {
+    const product = await Review.create({
+      text: req.body.text,
+      productId: req.params.productId,
+      userId: req.params.userId,
+    });
+    res.send(product);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+}); */
+
+router.route("/:productId/:userId").post(async (req, res, next) => {
+  try {
+    const product = await Review.create({
+      text: req.body.text,
+      productId: req.params.productId,
+      userId: req.params.userId,
+    });
+    res.send(product);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
 
 router
   .route("/:id")
