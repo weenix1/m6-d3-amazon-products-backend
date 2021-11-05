@@ -10,6 +10,14 @@ router
     try {
       const users = await User.findAll({
         include: Review,
+        where: {
+          ...(req.query.search && {
+            [Op.or]: [
+              { name: { [Op.ilike]: `%${req.query.search}%` } },
+              { email: { [Op.ilike]: `%${req.query.search}%` } },
+            ],
+          }),
+        },
       });
       res.send(users);
     } catch (error) {

@@ -1,5 +1,9 @@
 import express from "express";
 import models from "../../db/models/index.js";
+
+import sequelize from "../../db/index.js";
+
+const { Op } = sequelize;
 const { Review, Product, User } = models;
 
 const router = express.Router();
@@ -13,6 +17,11 @@ router
           User,
           {
             model: Product,
+            where: {
+              ...(req.query.search && {
+                [Op.or]: [{ name: { [Op.ilike]: `%${req.query.search}%` } }],
+              }),
+            },
           },
         ],
         attributes: {
