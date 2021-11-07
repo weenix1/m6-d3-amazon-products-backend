@@ -4,10 +4,11 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 import path from "path";
+import { Literal } from "sequelize/types/lib/utils";
 
 import sequelize from "../../db/index.js";
 
-const { Op } = sequelize;
+ const { Op } = sequelize; 
 const { Product, Review, Category, ProductCategory, User } = models;
 const router = express.Router();
 
@@ -24,27 +25,20 @@ router
   .get(async (req, res, next) => {
     try {
       const products = await Product.findAll({
-       /*  where: req.query.name
-          ? { name: { [Op.iLike]: "%" + req.query.name + "%" } }
-          : {}, */
+        where: {
+          ...(req.query.search && {
+            [Op.or]: [
+              { name: { [Op.ilike]: `%${req.query.search}%` } },
+              { price: { [Op.ilike]: `%${req.query.search}%` } },
+            ],
+          }),
+        },
         /* where: req.query.price
           ? {
               price: req.query.price,
             }
-          : {},
-
-        include: [
-          {
-            model: Category,
-            /* where: req.query.category
-              ? {
-                  name: { [Op.iLike]: "%" + req.query.category + "%" },
-                }
-              : {}, */
-            through: { attributes: [] },
-          },
-          Review,
-        ],
+          : {}, */
+        include: [{ model: Category, through: { attributes: [] } }, Review],
       });
       res.send(products);
     } catch (error) {
@@ -130,12 +124,3 @@ router
   });
 
 export default router;
-
-/* where: {
-  ...(req.query.search && {
-    [Op.or]: [
-      { name: { [Op.iLike]: `%${req.query.search}%` } },
-      { price: { [Op.iLike]: `%${req.query.search}%` } },
-    ],
-  }),
-}, */
