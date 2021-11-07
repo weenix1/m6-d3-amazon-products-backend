@@ -24,20 +24,27 @@ router
   .get(async (req, res, next) => {
     try {
       const products = await Product.findAll({
-        where: {
-          ...(req.query.search && {
-            [Op.or]: [
-              { name: { [Op.ilike]: `%${req.query.search}%` } },
-              { price: { [Op.ilike]: `%${req.query.search}%` } },
-            ],
-          }),
-        },
+       /*  where: req.query.name
+          ? { name: { [Op.iLike]: "%" + req.query.name + "%" } }
+          : {}, */
         /* where: req.query.price
           ? {
               price: req.query.price,
             }
-          : {}, */
-        include: [{ model: Category, through: { attributes: [] } }, Review],
+          : {},
+
+        include: [
+          {
+            model: Category,
+            /* where: req.query.category
+              ? {
+                  name: { [Op.iLike]: "%" + req.query.category + "%" },
+                }
+              : {}, */
+            through: { attributes: [] },
+          },
+          Review,
+        ],
       });
       res.send(products);
     } catch (error) {
@@ -123,3 +130,12 @@ router
   });
 
 export default router;
+
+/* where: {
+  ...(req.query.search && {
+    [Op.or]: [
+      { name: { [Op.iLike]: `%${req.query.search}%` } },
+      { price: { [Op.iLike]: `%${req.query.search}%` } },
+    ],
+  }),
+}, */

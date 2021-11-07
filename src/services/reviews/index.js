@@ -19,7 +19,7 @@ router
             model: Product,
             where: {
               ...(req.query.search && {
-                [Op.or]: [{ name: { [Op.ilike]: `%${req.query.search}%` } }],
+                [Op.or]: [{ name: { [Op.iLike]: `%${req.query.search}%` } }],
               }),
             },
           },

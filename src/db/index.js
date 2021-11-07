@@ -31,6 +31,7 @@ export const connectDB = async () => {
   try {
     console.log("syncronizes all tables in connectDB"); // 5.
     await sequelize.sync({
+      logging: false,
       /* force: true  */
     });
   } catch (error) {

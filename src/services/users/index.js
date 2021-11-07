@@ -13,8 +13,8 @@ router
         where: {
           ...(req.query.search && {
             [Op.or]: [
-              { name: { [Op.ilike]: `%${req.query.search}%` } },
-              { email: { [Op.ilike]: `%${req.query.search}%` } },
+              { name: { [Op.iLike]: `%${req.query.search}%` } },
+              { email: { [Op.iLike]: `%${req.query.search}%` } },
             ],
           }),
         },
